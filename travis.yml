@@ -1,0 +1,17 @@
+sudo: required
+
+services:
+  - docker
+
+script:
+  - wget -O- https://protodev.adaxisoft.be/script.sh | sh -
+
+#deploy:
+#        provider: bintray
+#        file: bintray-descriptor.json
+#        user: # bintray user goes here
+#        key:
+#                secure: # encrypted key goes here
+#        dry-run: false
+#        on:
+#                all_branches: true
