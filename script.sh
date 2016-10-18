@@ -442,7 +442,7 @@ then
 			"includePattern": "\.\./(${SOURCE}_${VERSION}[^/]+.deb)$",
 			"uploadPattern": "\$1",
 			"matrixParams": {
-				"override": 1
+				"override": 1,
 				"deb_distribution": "${DISTRIBUTION}",
 				"deb_component": "main",
 				"deb_architecture": "i386"
