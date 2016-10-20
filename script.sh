@@ -409,7 +409,7 @@ then
 		ARCHITECTURE="${DEBIAN_PACKAGE_NO_EXTENSION#*${VERSION}_}"
 		FILE_LIST="$FILE_LIST $(cat <<EOF
 		{
-			"includePattern": "\.\./(${ESCAPED_DEBIAN_PACKAGE//\./\\.})$",
+			"includePattern": "\.\./(${DEBIAN_PACKAGE//\./\\.})$",
 			"uploadPattern": "\$1",
 			"matrixParams": {
 			"deb_distribution": "${PROTODEV_DISTRIBUTION}",
