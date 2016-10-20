@@ -418,10 +418,10 @@ then
 		ESCAPED_DEBIAN_PACKAGE="${ESCAPED_DEBIAN_PACKAGE//\./\\.}"
 		ESCAPED_DEBIAN_PACKAGE="${ESCAPED_DEBIAN_PACKAGE//\+/\\+}"
 		FILE_LIST="$FILE_LIST $(cat <<EOF
-		{
-			"includePattern": "\.\./(${ESCAPED_DEBIAN_PACKAGE})$",
-			"uploadPattern": "\$1",
-			"matrixParams": {
+	{
+		"includePattern": "\.\.\/(${ESCAPED_DEBIAN_PACKAGE})$",
+		"uploadPattern": "\$1",
+		"matrixParams": {
 			"deb_distribution": "${PROTODEV_DISTRIBUTION}",
 			"deb_component": "main",
 			"deb_architecture": "${ARCHITECTURE}"
@@ -460,15 +460,16 @@ EOF
 		"gpgSign": false
 	},
 
-	"files": [ $FILE_LIST ],
+	"files": [ 
+		$FILE_LIST 
+	],
+
 	"publish": true
 }
 EOF
 
-Info "Generated descriptor:"
+Info "Bintray descriptor:"
 cat bintray-descriptor.json
-ls ../*.deb
-ls
 
 fi
 
