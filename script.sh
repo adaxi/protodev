@@ -67,7 +67,6 @@ then
 	if [ "${TRAVIS_TAG:-}" = "" ]
 	then
 		PROTODEV_DISTRIBUTION="${TRAVIS_BRANCH:-}"
-		PROTODEV_INCREMENT_VERSION_NUMBER="${PROTODEV_INCREMENT_VERSION_NUMBER:-true}"
 		case "${PROTODEV_DISTRIBUTION}" in
 			debian/*)
 				PROTODEV_DISTRIBUTION="${PROTODEV_DISTRIBUTION##debian/}"
@@ -209,6 +208,13 @@ then
 	PROTODEV_AUTOPKGTEST="${PROTODEV_AUTOPKGTEST:-true}"
 else
 	PROTODEV_AUTOPKGTEST="${PROTODEV_AUTOPKGTEST:-false}"
+fi
+
+## Detect auto increment version number ######################################
+
+if [ "${TRAVIS_TAG:-}" = "" ]
+then
+	PROTODEV_INCREMENT_VERSION_NUMBER="${PROTODEV_INCREMENT_VERSION_NUMBER:-true}"
 fi
 
 ## Print configuration ########################################################
