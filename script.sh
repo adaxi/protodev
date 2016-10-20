@@ -465,5 +465,10 @@ EOF
 }
 EOF
 
+Info "Generated descriptor:"
+cat bintray-descriptor.json
+ls ../*.deb
+ls
+
 fi
 
