@@ -414,9 +414,12 @@ then
 		DEBIAN_PACKAGE="$(basename $DEBIAN_PACKAGE)"
 		DEBIAN_PACKAGE_NO_EXTENSION="${DEBIAN_PACKAGE%.deb}"
 		ARCHITECTURE="${DEBIAN_PACKAGE_NO_EXTENSION#*${VERSION}_}"
+		ESCAPED_DEBIAN_PACKAGE="${DEBIAN_PACKAGE}"
+		ESCAPED_DEBIAN_PACKAGE="${ESCAPED_DEBIAN_PACKAGE//\./\\.}"
+		ESCAPED_DEBIAN_PACKAGE="${ESCAPED_DEBIAN_PACKAGE//\+/\\+}"
 		FILE_LIST="$FILE_LIST $(cat <<EOF
 		{
-			"includePattern": "\.\./(${DEBIAN_PACKAGE//\./\\.})$",
+			"includePattern": "\.\./(${ESCAPED_DEBIAN_PACKAGE})$",
 			"uploadPattern": "\$1",
 			"matrixParams": {
 			"deb_distribution": "${PROTODEV_DISTRIBUTION}",
