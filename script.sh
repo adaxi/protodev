@@ -238,8 +238,9 @@ Info "DEB_BUILD_OPTIONS: ${DEB_BUILD_OPTIONS:-<not set>}"
 
 if [ "${PROTODEV_INCREMENT_VERSION_NUMBER}" = true ]
 then
+	VERSION="${VERSION}+travis${TRAVIS_BUILD_NUMBER}"
 	cat >debian/changelog.new <<EOF
-${SOURCE} (${VERSION}+travis${TRAVIS_BUILD_NUMBER}) UNRELEASED; urgency=medium
+${SOURCE} (${VERSION}) UNRELEASED; urgency=medium
 
   * Automatic build.
 
