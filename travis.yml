@@ -4,11 +4,10 @@ services:
   - docker
 
 script:
-  - wget -O- https://protodev.adaxisoft.be/script.sh | sh -
+  - wget -O- http://protodev.adaxisoft.be/script.sh | bash -
 
 #deploy:
 #        provider: bintray
-#        file: bintray-descriptor.json
 #        user: # bintray user goes here
 #        key:
 #                secure: # encrypted key goes here

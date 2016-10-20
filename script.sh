@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #                  _            _            
 #  _ __  _ __ ___ | |_ ___   __| | _____   __
@@ -41,8 +41,7 @@ Error () {
 
 SOURCE="$(dpkg-parsechangelog | awk '/^Source:/ { print $2 }')"
 VERSION="$(dpkg-parsechangelog | awk '/^Version:/ { print $2 }')"
-DISTRIBUTION="$(dpkg-parsechangelog | awk '/^Distribution:/ { print $2 }')"
-DESCRIPTION="$(awk '/^Description:/ { $1=""; print $0 }' debian/control)"
+CHANGELOG_DISTRIBUTION="$(dpkg-parsechangelog | awk '/^Distribution:/ { print $2 }')"
 
 Info "Starting build of ${SOURCE} using protodev"
 
@@ -65,26 +64,21 @@ if [ "${PROTODEV_DISTRIBUTION:-}" = "" ]
 then
 	Info "Automatically detecting distribution"
 
-	PROTODEV_DISTRIBUTION="${TRAVIS_BRANCH:-}"
-
 	if [ "${TRAVIS_TAG:-}" = "" ]
 	then
-		PROTODEV_DISTRIBUTION="${DISTRIBUTION:-}"
+		PROTODEV_DISTRIBUTION="${TRAVIS_BRANCH:-}"
+		PROTODEV_INCREMENT_VERSION_NUMBER="${PROTODEV_INCREMENT_VERSION_NUMBER:-true}"
+		case "${PROTODEV_DISTRIBUTION}" in
+			debian/*)
+				PROTODEV_DISTRIBUTION="${PROTODEV_DISTRIBUTION##debian/}"
+				;;
+			ubuntu/*)
+				PROTODEV_DISTRIBUTION="${PROTODEV_DISTRIBUTION##ubuntu/}"
+				;;
+		esac
+	else
+		PROTODEV_DISTRIBUTION="${CHANGELOG_DISTRIBUTION:-}"
 	fi
-
-	if [ "${PROTODEV_DISTRIBUTION:-}" = "" ]
-	then
-		PROTODEV_DISTRIBUTION="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo master)"
-	fi
-
-	case "${PROTODEV_DISTRIBUTION}" in
-		debian/*)
-			PROTODEV_DISTRIBUTION="${PROTODEV_DISTRIBUTION##debian/}"
-			;;
-		ubuntu/*)
-			PROTODEV_DISTRIBUTION="${PROTODEV_DISTRIBUTION##ubuntu/}"
-			;;
-	esac	
 
 	# Detect backports
 	case "${PROTODEV_DISTRIBUTION}" in
@@ -407,15 +401,33 @@ then
 
 	SUBJECT="${TRAVIS_REPO_SLUG%/*}"
 	RELEASED="$(date +%Y-%m-%d)"
-	ARCHITECTURE="$(dpkg -I ../php5-solr_2.4.0-1_*.deb | awk '/^ Architecture:/ { print $2 }')"
+
+	for DEBIAN_PACKAGE in ../*.deb; do
+		DEBIAN_PACKAGE="$(basename $DEBIAN_PACKAGE)"
+		DEBIAN_PACKAGE_NO_EXTENSION="${DEBIAN_PACKAGE%.deb}"
+		ARCHITECTURE="${DEBIAN_PACKAGE_NO_EXTENSION#*${VERSION}_}"
+		FILE_LIST="$FILE_LIST $(cat <<EOF
+		{
+			"includePattern": "\.\./(${ESCAPED_DEBIAN_PACKAGE//\./\\.})$",
+			"uploadPattern": "\$1",
+			"matrixParams": {
+			"deb_distribution": "${PROTODEV_DISTRIBUTION}",
+			"deb_component": "main",
+			"deb_architecture": "${ARCHITECTURE}"
+		}
+	},
+EOF
+)"
+	done
+	FILE_LIST="${FILE_LIST%,}"
 
 	cat >> bintray-descriptor.json <<EOF
 {
 	"package": {
 		"name": "${SOURCE}",
-		"repo": "${DISTRIBUTION}",
+		"repo": "${PROTODEV_DISTRIBUTION}",
 		"subject": "${SUBJECT}",
-		"desc": "${DESCRIPTION}",
+		"desc": "",
 		"website_url": "https://github.com/${TRAVIS_REPO_SLUG}",
 		"issue_tracker_url": "https://github.com/${TRAVIS_REPO_SLUG}/issues",
 		"vcs_url": "https://github.com/${TRAVIS_REPO_SLUG}.git",
@@ -437,18 +449,7 @@ then
 		"gpgSign": false
 	},
 
-	"files": [
-		{
-			"includePattern": "\.\./(${SOURCE}_${VERSION}[^/]+.deb)$",
-			"uploadPattern": "\$1",
-			"matrixParams": {
-				"override": 1,
-				"deb_distribution": "${DISTRIBUTION}",
-				"deb_component": "main",
-				"deb_architecture": "i386"
-			}
-		}
-	],
+	"files": [ $FILE_LIST ],
 	"publish": true
 }
 EOF
