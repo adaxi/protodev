@@ -9,6 +9,7 @@ script:
 #deploy:
 #        provider: bintray
 #        user: # bintray user goes here
+#        file: bintray-descriptor.json
 #        key:
 #                secure: # encrypted key goes here
 #        dry-run: false

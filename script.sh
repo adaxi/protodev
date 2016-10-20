@@ -399,6 +399,7 @@ sed -e 's@^@  @g' "${PROTODEV_TARGET_DIR}"/*.changes
 if [ "${PROTODEV_GENERATE_BINTRAY_DESCRIPTOR}" = "true" ]
 then
 
+	FILE_LIST=""
 	SUBJECT="${TRAVIS_REPO_SLUG%/*}"
 	RELEASED="$(date +%Y-%m-%d)"
 
