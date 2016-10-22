@@ -5,33 +5,33 @@
 <body>
 	<h1>Protodev</h1>
 
-	The prototev stack provides an APT repository containing your GitHub managed Debian packages.
+	<p>The prototev stack provides an APT repository containing your GitHub managed Debian packages.</p>
 
-	<img src="media/sequence.png"></img>
+	<img src="media/sequence.png"/>
 
-	Using this stack you can push your packages to GitHub, TravisCI builds and tests them, on successful builds they get published to Bintray.
-	This helps catch issues as early as possible and avoids having to run long package builds on one's own computers.
+	<p>Using this stack you can push your packages to GitHub, TravisCI builds and tests them, on successful builds they get published to Bintray.
+	This helps catch issues as early as possible and avoids having to run long package builds on one's own computers.</p>
 
 	<h2>How it works</h2>
 
-	First, protodev detects which release of Debian the branch is targeting based on the current branch name. The experimental suite and all varieties of backports are intelligently detected.
+	<p>First, protodev detects which release of Debian the branch is targeting based on the current branch name. The experimental suite and all varieties of backports are intelligently detected.
 
 	A throwaway Docker image is then created containing all the required build-dependencies. The package is then built in this isolated environment with no access to the internet.
 
 	Lintian is run on the result and the binary packages are saved to the parent directory.
 
-	On successful builds the Bintray provider is triggered, and the package is uploaded to your APT repository.
+	On successful builds the Bintray provider is triggered, and the package is uploaded to your APT repository.</p>
 
 	<h2>Usage</h2>
 
 
 
-	<h2>Frequently asked questions<h2>
+	<h2>Frequently asked questions</h2>
 
-	Q: But wget | bash - is insecure!
-	A: Of course, and you should never run such a command on your own machine. However, not only does Travis-CI build within throwaway containers that you are not responsible for, cannot trust, and generally don't care about, there is zero expectation that the resulting .deb files are to be used or installed in a production environment.
+	<p>Q: But wget | bash - is insecure!
+	A: Of course, and you should never run such a command on your own machine. However, not only does Travis-CI build within throwaway containers that you are not responsible for, cannot trust, and generally don't care about, there is zero expectation that the resulting .deb files are to be used or installed in a production environment.</p>
 
 
-	Package build inspired by <a href="https://travis.debian.net">travis.debian.net</a>
+	<p>Package build inspired by <a href="https://travis.debian.net">travis.debian.net</a></p>
 </body>
 </html>
