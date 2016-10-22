@@ -343,6 +343,7 @@ EOF
 fi
 
 cat >>Dockerfile <<EOF
+RUN cat debian/control
 RUN env DEBIAN_FRONTEND=noninteractive mk-build-deps --install --remove --tool 'apt-get --no-install-recommends --yes' debian/control
 
 RUN rm -f Dockerfile
