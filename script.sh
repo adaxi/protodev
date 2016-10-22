@@ -446,7 +446,7 @@ EOF
 		"vcs_url": "https://github.com/${TRAVIS_REPO_SLUG}.git",
 		"github_use_tag_release_notes": false,
 		"github_release_notes_file": "RELEASE.txt",
-		"licenses": [ "See debian/changelog"],
+		"licenses": [],
 		"labels": [],
 		"public_download_numbers": false,
 		"public_stats": false,
