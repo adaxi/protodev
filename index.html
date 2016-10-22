@@ -1,37 +1,122 @@
 <html>
 <head>
-	<title>protodev</title>
+	<title>Protodev</title>
+	<link rel="stylesheet" type="text/css" href="media/style.css">
 </head>
 <body>
-	<h1>Protodev</h1>
+	<header>
+		<img alt="Logo" src="media/logo.png">
+		<h1>Protodev</h1>
+	</header>
 
-	<p>The prototev stack provides an APT repository containing your GitHub managed Debian packages.</p>
+	<p>The <strong>prototev</strong> stack builds your GitHub managed Debian packages and publishes them into an apt repository.</p>
 
-	<img src="media/sequence.png"/>
+	<img alt="Sequence: GitHub to Travis to Bintray to Your Development environment" src="media/sequence.png"/>
 
-	<p>Using this stack you can push your packages to GitHub, TravisCI builds and tests them, on successful builds they get published to Bintray.
-	This helps catch issues as early as possible and avoids having to run long package builds on one's own computers.</p>
+	<p>Your packages are build in a clean and isolated environment to test on every update.
+
+	This helps catch issues as early as possible and avoids having to run long package builds on one's own computers.
+
+	Once your packages are built they are installable in a convenient way.</p>
 
 	<h2>How it works</h2>
 
-	<p>First, protodev detects which release of Debian the branch is targeting based on the current branch name. The experimental suite and all varieties of backports are intelligently detected.
+	<p>A bash script running on <strong>Travis CI</strong> detects which release of <strong>Debian</strong> or <strong>Ubuntu</strong> the branch is targeting based on the current branch name.
 
-	A throwaway Docker image is then created containing all the required build-dependencies. The package is then built in this isolated environment with no access to the internet.
+	When a tag is created the bash script selects the release according to the <a href="https://www.debian.org/doc/manuals/developers-reference/pkgs.html#distribution">debian/changelog</a> contents.
 
-	Lintian is run on the result and the binary packages are saved to the parent directory.
+	The experimental suite and all varieties of backports are intelligently detected.</p>
 
-	On successful builds the Bintray provider is triggered, and the package is uploaded to your APT repository.</p>
+	<p>A throwaway Docker image is then created containing all the required build-dependencies.
+
+	The package is then built in this isolated environment with no access to the internet.
+
+	Lintian is run on the result and the binary packages are saved to the parent directory.</p>
+
+	<p>On successful builds the <strong>Bintray</strong> provider uploads the generated packages in the parent direction, and the package is added to your apt repository.</p>
 
 	<h2>Usage</h2>
 
+	<p>We assume that:</p>
+	<ul>
+		<li>your package is already on <strong>GitHub</strong>.</li>
+		<li>your package is ready to build using <strong>git-buildpackage</strong>.</li>
+		<li>you have <a href="https://github.com/travis-ci/travis.rb#installation">travis</a> command line client available.</li>
+	</ul>
 
+	<p>Enable builds for your package on TravisCI.</p>
+
+	<img src="media/enabled_repo.png">
+
+	<p>Ensure that you only build when '.travis.yml' is present.</p>
+
+	<img src="media/only_when_travis.png">
+
+	<p>Add the .travis.yml in your repository. The first part of the file should look like:</p>
+
+	<pre>
+sudo: required
+services:
+	- docker
+script:
+	- wget -O- http://protodev.adaxisoft.be/script.sh | bash -</pre>
+
+	<p>Add it to your package directory:</p>
+
+	<pre>
+# either copy it from this page or download it
+wget -O.travis.yml http://travis.debian.net/travis.yml</pre>
+
+	<p>"3.0 (quilt)" packages should ignore presence of .travis.yml extra file.</p>
+	<pre>
+echo 'extend-diff-ignore = "^\.travis\.yml$"' >> debian/source/options</pre>
+
+	<p>This gives <strong>TravisCI</strong> enough information to build the package but <strong>not</strong> enough to publish to <strong>Bintray</strong>.</p>
+
+	<p>Login into <a href="https://bintray.com/login" target="_blank">Bintray</a> and copy your API key. You will find it under your profile settings.</p>
+
+	<img src="media/bintray_api.png">
+
+	<p>Append the following snippet to your .travis.yml and take care to replace the user and key entries.</p>
+
+	<pre>
+deploy:
+  provider: bintray
+  file: bintray-descriptor.json
+  user: "Bintray user"
+  key: "Bintray api key"
+  dry-run: false
+  on:
+    all_branches: true</pre>
+
+	<p>It is recommended that you encrypt your api key. You can encrypt this key using the travis command line client and this command: (you must execute this command in the same directory as your .travis.yml)</p>
+
+	<pre>travis encrypt BINTRAY-API-KEY --add deploy.key</pre>
+
+	<p>At this point your package is ready. You can commit your .travis.yml file.</p>
+
+	<pre>
+git add .travis.yml
+git commit -m "Add .travis.yml from Protodev project."</pre>
+
+	<p>The last step is to create the Bintray apt repository. The repository should bear the name of the distribution:</p>
+
+	<img src="media/repo_create.png">
+
+	<p>Now every time you push your package it will be published in to Bintray.</p>
 
 	<h2>Frequently asked questions</h2>
 
-	<p>Q: But wget | bash - is insecure!
-	A: Of course, and you should never run such a command on your own machine. However, not only does Travis-CI build within throwaway containers that you are not responsible for, cannot trust, and generally don't care about, there is zero expectation that the resulting .deb files are to be used or installed in a production environment.</p>
+	<dl>
+		<dt>Q: Where is the code?</dt>
+		<dd>You can find in on <a href="http://github.com/adaxi/protodev">GitHub</a>.</dd>
 
+		<dt>Q: But wget | bash - is insecure!</dt>
+		<dd>Of course, and you should never run such a command on your own machine. However, not only does Travis-CI build within throwaway containers that you are not responsible for, cannot trust, and generally don't care about, there is zero expectation that the resulting .deb files are to be used or installed in a production environment.</dd>
 
-	<p>Package build inspired by <a href="https://travis.debian.net">travis.debian.net</a></p>
+		<dt>Q: Is this similar to <a href="https://travis.debian.net">travis.debian.net</a>?</dt>
+		<dd>Yes, in fact the build script was my starting point. I added support for Bintray and support of Ubuntu distributions.</dd>
+	</dl>
+
 </body>
 </html>
