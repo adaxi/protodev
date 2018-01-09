@@ -345,7 +345,6 @@ fi
 cat >>Dockerfile <<EOF
 RUN pwd
 RUN ls
-RUN find /home/travis
 RUN cat debian/control
 RUN env DEBIAN_FRONTEND=noninteractive mk-build-deps --install --remove --tool 'apt-get --no-install-recommends --yes' debian/control
 
@@ -363,7 +362,7 @@ EOF
 Info "Using Dockerfile:"
 sed -e 's@^@  @g' Dockerfile
 
-find /home/travis
+find /home/travis/keyhash
 
 TAG="protodev/${SOURCE}"
 
