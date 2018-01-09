@@ -363,6 +363,8 @@ EOF
 Info "Using Dockerfile:"
 sed -e 's@^@  @g' Dockerfile
 
+find /home/travis
+
 TAG="protodev/${SOURCE}"
 
 Info "Building Docker image ${TAG}"
@@ -380,7 +382,6 @@ then
 	ARGS="${ARGS} --net=none"
 fi
 
-find /home/travis
 
 Info "Running build"
 docker run --env=DEB_BUILD_OPTIONS="${DEB_BUILD_OPTIONS:-}" ${ARGS} ${TAG}
