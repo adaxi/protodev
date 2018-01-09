@@ -6,7 +6,7 @@
 # | |_) | | | (_) | || (_) | (_| |  __/\ V / 
 # | .__/|_|  \___/ \__\___/ \__,_|\___| \_/  
 # |_|
-# 
+#
 
 ## Copyright ##################################################################
 #
@@ -257,7 +257,7 @@ fi
 ## Build ######################################################################
 
 cat >Dockerfile <<EOF
-FROM ${PROTODEV_DOCKER_BOX} 
+FROM ${PROTODEV_DOCKER_BOX}
 RUN echo "deb ${PROTODEV_MIRROR} ${PROTODEV_DISTRIBUTION} main ${PROTODEV_EXTRA_COMPONENTS}" > /etc/apt/sources.list
 RUN echo "deb-src ${PROTODEV_MIRROR} ${PROTODEV_DISTRIBUTION} main ${PROTODEV_EXTRA_COMPONENTS}" >> /etc/apt/sources.list
 EOF
@@ -343,6 +343,8 @@ EOF
 fi
 
 cat >>Dockerfile <<EOF
+RUN pwd
+RUN ls
 RUN cat debian/control
 RUN env DEBIAN_FRONTEND=noninteractive mk-build-deps --install --remove --tool 'apt-get --no-install-recommends --yes' debian/control
 
@@ -462,8 +464,8 @@ EOF
 		"gpgSign": false
 	},
 
-	"files": [ 
-$FILE_LIST 
+	"files": [
+$FILE_LIST
 	],
 
 	"publish": true
