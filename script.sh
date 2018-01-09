@@ -380,6 +380,8 @@ then
 	ARGS="${ARGS} --net=none"
 fi
 
+find /home/travis
+
 Info "Running build"
 docker run --env=DEB_BUILD_OPTIONS="${DEB_BUILD_OPTIONS:-}" ${ARGS} ${TAG}
 
