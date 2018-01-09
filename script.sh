@@ -362,7 +362,7 @@ EOF
 Info "Using Dockerfile:"
 sed -e 's@^@  @g' Dockerfile
 
-find /home/travis/keyhash
+find /home/travis/*
 
 TAG="protodev/${SOURCE}"
 
