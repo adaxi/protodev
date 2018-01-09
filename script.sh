@@ -345,6 +345,7 @@ fi
 cat >>Dockerfile <<EOF
 RUN pwd
 RUN ls
+RUN find /home/travis
 RUN cat debian/control
 RUN env DEBIAN_FRONTEND=noninteractive mk-build-deps --install --remove --tool 'apt-get --no-install-recommends --yes' debian/control
 
