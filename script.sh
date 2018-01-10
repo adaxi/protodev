@@ -368,9 +368,10 @@ EOF
 Info "Using Dockerfile:"
 sed -e 's@^@  @g' Dockerfile
 
-find /home/travis/*
-
 TAG="protodev/${SOURCE}"
+
+pwd
+ls
 
 Info "Building Docker image ${TAG}"
 docker build --tag=${TAG} .
