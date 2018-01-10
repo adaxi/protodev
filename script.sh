@@ -360,6 +360,8 @@ RUN env DEBIAN_FRONTEND=noninteractive mk-build-deps --install --remove --tool '
 
 RUN rm -f Dockerfile
 RUN git checkout .travis.yml || true
+RUN git checkout .dockerignore || true
+RUN git checkout Dockerfile || true
 RUN mkdir -p ${PROTODEV_BUILD_DIR}
 
 CMD ${PROTODEV_GIT_BUILDPACKAGE} ${PROTODEV_GIT_BUILDPACKAGE_OPTIONS} --git-export-dir=${PROTODEV_BUILD_DIR} --git-builder='debuild -i -I -uc -us -sa'
@@ -367,6 +369,9 @@ EOF
 
 Info "Using Dockerfile:"
 sed -e 's@^@  @g' Dockerfile
+
+Info "Removing .dockerignore"
+rm -f .dockerignore
 
 TAG="protodev/${SOURCE}"
 
