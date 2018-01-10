@@ -254,6 +254,16 @@ EOF
 	git commit -m "Incrementing version number."
 fi
 
+## Git setup #################################################################
+
+git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+git fetch
+
+for X in $(git branch -r | grep -v HEAD)
+do
+	git branch --track $(echo "${X}" | sed -e 's@.*/@@g') ${X} || true
+done
+
 ## Build ######################################################################
 
 cat >Dockerfile <<EOF
@@ -351,10 +361,6 @@ RUN env DEBIAN_FRONTEND=noninteractive mk-build-deps --install --remove --tool '
 RUN rm -f Dockerfile
 RUN git checkout .travis.yml || true
 RUN mkdir -p ${PROTODEV_BUILD_DIR}
-
-RUN git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
-RUN git fetch
-RUN for X in \$(git branch -r | grep -v HEAD); do git branch --track \$(echo "\${X}" | sed -e 's@.*/@@g') \${X} || true; done
 
 CMD ${PROTODEV_GIT_BUILDPACKAGE} ${PROTODEV_GIT_BUILDPACKAGE_OPTIONS} --git-export-dir=${PROTODEV_BUILD_DIR} --git-builder='debuild -i -I -uc -us -sa'
 EOF
