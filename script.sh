@@ -268,15 +268,15 @@ done
 
 cat >Dockerfile <<EOF
 FROM ${PROTODEV_DOCKER_BOX}
-RUN echo "deb ${PROTODEV_MIRROR} ${PROTODEV_DISTRIBUTION} main ${PROTODEV_EXTRA_COMPONENTS}" > /etc/apt/sources.list
-RUN echo "deb-src ${PROTODEV_MIRROR} ${PROTODEV_DISTRIBUTION} main ${PROTODEV_EXTRA_COMPONENTS}" >> /etc/apt/sources.list
+RUN echo "deb ${PROTODEV_MIRROR} ${PROTODEV_DISTRIBUTION} main ${PROTODEV_EXTRA_COMPONENTS:-}" > /etc/apt/sources.list
+RUN echo "deb-src ${PROTODEV_MIRROR} ${PROTODEV_DISTRIBUTION} main ${PROTODEV_EXTRA_COMPONENTS:-}" >> /etc/apt/sources.list
 EOF
 
 if [ "${PROTODEV_UPDATES}" = true ]
 then
 	cat >>Dockerfile <<EOF
-RUN echo "deb ${PROTODEV_MIRROR} ${PROTODEV_DISTRIBUTION}-updates main ${PROTODEV_EXTRA_COMPONENTS}" >> /etc/apt/sources.list
-RUN echo "deb-src ${PROTODEV_MIRROR} ${PROTODEV_DISTRIBUTION}-updates main ${PROTODEV_EXTRA_COMPONENTS}" >> /etc/apt/sources.list
+RUN echo "deb ${PROTODEV_MIRROR} ${PROTODEV_DISTRIBUTION}-updates main ${PROTODEV_EXTRA_COMPONENTS:-}" >> /etc/apt/sources.list
+RUN echo "deb-src ${PROTODEV_MIRROR} ${PROTODEV_DISTRIBUTION}-updates main ${PROTODEV_EXTRA_COMPONENTS:-}" >> /etc/apt/sources.list
 EOF
 fi
 
