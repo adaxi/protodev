@@ -47,6 +47,7 @@ Info "Starting build of ${SOURCE} using protodev"
 
 PROTODEV_BUILD_DIR="${PROTODEV_BUILD_DIR:-/build}"
 PROTODEV_TARGET_DIR="${PROTODEV_TARGET_DIR:-../}"
+PROTODEV_BRANCH_OR_TAG_DISTRIBUTION="${PROTODEV_BRANCH_OR_TAG_DISTRIBUTION:-true}"
 PROTODEV_NETWORK_ENABLED="${PROTODEV_NETWORK_ENABLED:-false}"
 PROTODEV_INCREMENT_VERSION_NUMBER="${PROTODEV_INCREMENT_VERSION_NUMBER:-}"
 PROTODEV_DEBIAN_MIRROR="${PROTODEV_DEBIAN_MIRROR:-http://ftp.de.debian.org/debian}"
@@ -64,7 +65,7 @@ if [ "${PROTODEV_DISTRIBUTION:-}" = "" ]
 then
 	Info "Automatically detecting distribution"
 
-	if [ "${TRAVIS_TAG:-}" = "" ]
+	if [ "${TRAVIS_TAG:-}" = "" -a "${PROTODEV_BRANCH_OR_TAG_DISTRIBUTION}" = "true" ]
 	then
 		PROTODEV_DISTRIBUTION="${TRAVIS_BRANCH:-}"
 		case "${PROTODEV_DISTRIBUTION}" in
@@ -93,14 +94,17 @@ then
 
 	# Detect codenames
 	case "${PROTODEV_DISTRIBUTION}" in
-		oldstable)
+		oldoldstable)
 			PROTODEV_DISTRIBUTION="wheezy"
 			;;
-		stable)
+		oldstable)
 			PROTODEV_DISTRIBUTION="jessie"
 			;;
-		testing)
+		stable)
 			PROTODEV_DISTRIBUTION="stretch"
+			;;
+		testing)
+			PROTODEV_DISTRIBUTION="buster"
 			;;
 		unstable|master)
 			PROTODEV_DISTRIBUTION="sid"
