@@ -55,6 +55,7 @@ PROTODEV_UBUNTU_MIRROR="${PROTODEV_UBUNTU_MIRROR:-http://archive.ubuntu.com/ubun
 PROTODEV_DEBIAN_SECURITY_MIRROR="${PROTODEV_DEBIAN_SECURITY_MIRROR:-http://security.debian.org/}"
 PROTODEV_UBUNTU_SECURITY_MIRROR="${PROTODEV_UBUNTU_SECURITY_MIRROR:-http://security.ubuntu.com/ubuntu}"
 PROTODEV_GENERATE_BINTRAY_DESCRIPTOR="${PROTODEV_GENERATE_BINTRAY_DESCRIPTOR:-true}"
+PROTODEV_BUILD_COMMAND="${PROTODEV_BUILD_COMMAND:---git-builder='debuild -i -I -uc -us -sa'}"
 
 #### Distribution #############################################################
 
@@ -368,7 +369,7 @@ RUN git checkout .dockerignore || true
 RUN git checkout Dockerfile || true
 RUN mkdir -p ${PROTODEV_BUILD_DIR}
 
-CMD ${PROTODEV_GIT_BUILDPACKAGE} ${PROTODEV_GIT_BUILDPACKAGE_OPTIONS} --git-export-dir=${PROTODEV_BUILD_DIR} --git-builder='debuild -i -I -uc -us -sa'
+CMD ${PROTODEV_GIT_BUILDPACKAGE} ${PROTODEV_GIT_BUILDPACKAGE_OPTIONS} --git-export-dir=${PROTODEV_BUILD_DIR} ${PROTODEV_BUILD_COMMAND}
 EOF
 
 Info "Using Dockerfile:"
